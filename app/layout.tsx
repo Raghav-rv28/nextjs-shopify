@@ -1,6 +1,8 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import Navbar from 'components/layout/navbar';
+import LoadingDots from 'components/loading-dots';
 import { ThemeProvider } from 'components/theme-provider';
+import { Toaster } from 'components/ui/toaster';
 import { GeistSans } from 'geist/font';
 import { cn, ensureStartsWith } from 'lib/utils';
 import { Inter as FontSans } from 'next/font/google';
@@ -48,8 +50,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         >
           <ThemeProvider attribute="class" defaultTheme="dark">
             <Navbar />
-            <Suspense>
-              <main>{children}</main>
+            <Suspense fallback={<LoadingDots className="text-lg text-orange-300" />}>
+              <main>
+                {children}
+                <Toaster />
+              </main>
             </Suspense>
           </ThemeProvider>
         </body>

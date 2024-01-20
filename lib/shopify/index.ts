@@ -10,7 +10,7 @@ import {
   editCartItemsMutation,
   removeFromCartMutation
 } from './mutations/cart';
-import { customerAccessTokenCreate } from './mutations/user-auth';
+import { customerAccessTokenCreate } from './mutations/customer';
 import { getCartQuery } from './queries/cart';
 import {
   getCollectionProductsQuery,
