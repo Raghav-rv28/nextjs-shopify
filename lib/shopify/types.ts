@@ -264,3 +264,26 @@ export type ShopifyProductsOperation = {
     sortKey?: string;
   };
 };
+// MY OWN MAGIC
+export type CustomerAccessTokenCreateInput = {
+  email: String;
+  password: String;
+};
+
+export type CustomerAccessToken = {
+  accessToken: string;
+  expiresAt: Date;
+};
+export type CustomerAccessTokenOperation = {
+  data: {
+    customerAccessToken: CustomerAccessToken;
+    customerUserErrors: {
+      code: string;
+      field: string;
+      message: string;
+    };
+  };
+  variables: {
+    input: CustomerAccessTokenCreateInput;
+  };
+};

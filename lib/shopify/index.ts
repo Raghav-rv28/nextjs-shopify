@@ -10,6 +10,7 @@ import {
   editCartItemsMutation,
   removeFromCartMutation
 } from './mutations/cart';
+import { customerAccessTokenCreate } from './mutations/user-auth';
 import { getCartQuery } from './queries/cart';
 import {
   getCollectionProductsQuery,
@@ -27,6 +28,7 @@ import {
   Cart,
   Collection,
   Connection,
+  CustomerAccessTokenOperation,
   Image,
   Menu,
   Page,
@@ -423,6 +425,27 @@ export async function getProducts({
   });
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
+}
+
+// MY OWN MAGIC
+
+export async function getCustomerAccessToken({
+  email,
+  password
+}: {
+  email: string;
+  password: string;
+}) {
+  try {
+    return await shopifyFetch<CustomerAccessTokenOperation>({
+      query: customerAccessTokenCreate,
+      variables: {
+        input: { email, password }
+      }
+    });
+  } catch (error) {
+    throw new Error();
+  }
 }
 
 // This is called from `app/api/revalidate.ts` so providers can control revalidation logic.
