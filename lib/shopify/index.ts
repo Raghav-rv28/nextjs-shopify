@@ -345,11 +345,20 @@ export async function getMenu(handle: string): Promise<Menu[]> {
       handle
     }
   });
-
   return (
-    res.body?.data?.menu?.items.map((item: { title: string; url: string }) => ({
-      title: item.title,
-      path: item.url.replace(domain, '').replace('/collections', '/search').replace('/pages', '')
+    (await res.body?.data?.menu?.items.map((item) => {
+      const itemSitem =
+        item.items.length === 0
+          ? []
+          : item.items.map((item) => ({
+              url: item.url,
+              title: item.title
+            }));
+      return {
+        title: item.title,
+        url: item.url.replace(domain, '').replace('/collections', '/search').replace('/pages', ''),
+        items: itemSitem
+      };
     })) || []
   );
 }
@@ -379,7 +388,6 @@ export async function getProduct(handle: string): Promise<Product | undefined> {
       handle
     }
   });
-
   return reshapeProduct(res.body.data.product, false);
 }
 

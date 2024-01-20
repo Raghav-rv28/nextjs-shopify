@@ -10,8 +10,8 @@ import Search from './search';
 const { SITE_NAME } = process.env;
 
 export default async function Navbar() {
-  const menu = await getMenu('next-js-frontend-header-menu');
-
+  const menu = await getMenu('main-menu');
+  console.log(menu);
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
@@ -30,7 +30,7 @@ export default async function Navbar() {
               {menu.map((item: Menu) => (
                 <li key={item.title}>
                   <Link
-                    href={item.path}
+                    href={item.url}
                     className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
                   >
                     {item.title}

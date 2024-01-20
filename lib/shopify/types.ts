@@ -42,7 +42,11 @@ export type Image = {
 
 export type Menu = {
   title: string;
-  path: string;
+  url: string;
+  items: {
+    title: string;
+    url: string;
+  }[];
 };
 
 export type Money = {
@@ -215,10 +219,7 @@ export type ShopifyCollectionsOperation = {
 export type ShopifyMenuOperation = {
   data: {
     menu?: {
-      items: {
-        title: string;
-        url: string;
-      }[];
+      items: Menu[];
     };
   };
   variables: {
