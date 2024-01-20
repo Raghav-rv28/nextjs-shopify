@@ -1,4 +1,6 @@
+import { ClerkProvider } from '@clerk/nextjs';
 import Navbar from 'components/layout/navbar';
+import { ThemeProvider } from 'components/theme-provider';
 import { GeistSans } from 'geist/font';
 import { cn, ensureStartsWith } from 'lib/utils';
 import { Inter as FontSans } from 'next/font/google';
@@ -36,18 +38,22 @@ export const fontSans = FontSans({
 });
 export default async function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={GeistSans.variable}>
-      <body
-        className={cn(
-          'bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white',
-          fontSans.variable
-        )}
-      >
-        <Navbar />
-        <Suspense>
-          <main>{children}</main>
-        </Suspense>
-      </body>
-    </html>
+    <ClerkProvider signInUrl={'http://localhost:3000/sign-in'}>
+      <html lang="en" className={GeistSans.variable}>
+        <body
+          className={cn(
+            'bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white',
+            fontSans.variable
+          )}
+        >
+          <ThemeProvider attribute="class" defaultTheme="dark">
+            <Navbar />
+            <Suspense>
+              <main>{children}</main>
+            </Suspense>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

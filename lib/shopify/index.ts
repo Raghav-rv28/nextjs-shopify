@@ -353,12 +353,12 @@ export async function getMenu(handle: string): Promise<Menu[]> {
         item.items.length === 0
           ? []
           : item.items.map((item) => ({
-              url: item.url,
+              url: item.url.replace(domain, '').replace('/collections', '/search'),
               title: item.title
             }));
       return {
         title: item.title,
-        url: item.url.replace(domain, '').replace('/collections', '/search').replace('/pages', ''),
+        url: item.url.replace(domain, '').replace('/collections', '/search'),
         items: itemSitem
       };
     })) || []

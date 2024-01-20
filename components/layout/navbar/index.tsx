@@ -1,17 +1,19 @@
 import Cart from 'components/cart';
 import OpenCart from 'components/cart/open-cart';
+import ThemeSwitcher from 'components/layout/navbar/theme-switcher';
 import LogoSquare from 'components/logo-square';
 import { getMenu } from 'lib/shopify';
 import { Menu } from 'lib/shopify/types';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import Account from './account';
 import MobileMenu from './mobile-menu';
 import Search from './search';
 const { SITE_NAME } = process.env;
 
 export default async function Navbar() {
   const menu = await getMenu('main-menu');
-  console.log(menu);
+
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
@@ -40,11 +42,14 @@ export default async function Navbar() {
             </ul>
           ) : null}
         </div>
-        <div className="hidden justify-center md:flex md:w-1/3">
+        <div className="hidden justify-center lg:flex lg:w-1/3">
           <Search />
         </div>
-        <div className="flex justify-end md:w-1/3">
+        <div className="hidden justify-center lg:flex lg:w-auto"></div>
+        <div className="mr-[5rem] flex justify-end space-x-7 md:w-1/3">
           <Suspense fallback={<OpenCart />}>
+            <ThemeSwitcher />
+            <Account />
             <Cart />
           </Suspense>
         </div>
