@@ -1,4 +1,4 @@
-import { UserButton } from '@clerk/nextjs';
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import Cart from 'components/cart';
 import OpenCart from 'components/cart/open-cart';
 import ThemeSwitcher from 'components/layout/navbar/theme-switcher';
@@ -7,6 +7,7 @@ import { getMenu } from 'lib/shopify';
 import { Menu } from 'lib/shopify/types';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import Account from './account';
 import MobileMenu from './mobile-menu';
 import Search from './search';
 const { SITE_NAME } = process.env;
@@ -49,7 +50,12 @@ export default async function Navbar() {
         <div className="mr-[5rem] flex justify-end space-x-7 md:w-1/3">
           <Suspense fallback={<OpenCart />}>
             <ThemeSwitcher />
-            <UserButton />
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            <SignedOut>
+              <Account />
+            </SignedOut>
             <Cart />
           </Suspense>
         </div>
