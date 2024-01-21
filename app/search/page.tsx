@@ -8,7 +8,6 @@ export const metadata = {
   description: 'Search for products in the store.'
 };
 
-export const runtime = 'edge';
 export default async function SearchPage({
   searchParams
 }: {
