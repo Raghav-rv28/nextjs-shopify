@@ -12,7 +12,15 @@ export default authMiddleware({
       req.url === 'http://localhost:3000/'
     )
       return !returnVal;
-    ['/sign-in', '/sign-up', '/product', '/search', '/collection', '/pages'].forEach((val) => {
+    [
+      '/sign-in',
+      '/sign-up',
+      '/product',
+      '/search',
+      '/collection',
+      '/pages',
+      '/account/login'
+    ].forEach((val) => {
       if (req.url.includes(val)) {
         returnVal = true;
       }
