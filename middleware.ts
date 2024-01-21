@@ -7,7 +7,11 @@ export default authMiddleware({
   debug: false,
   publicRoutes: (req) => {
     let returnVal = false;
-    if (req.url === 'https://dj-teststore-nextjs-rupq.vercel.app/') return !returnVal;
+    if (
+      req.url === 'https://dj-teststore-nextjs-rupq.vercel.app/' ||
+      req.url === 'http://localhost:3000/'
+    )
+      return !returnVal;
     ['/sign-in', '/sign-up', '/product', '/search', '/collection', '/pages'].forEach((val) => {
       if (req.url.includes(val)) {
         returnVal = true;
