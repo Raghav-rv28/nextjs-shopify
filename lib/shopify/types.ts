@@ -276,14 +276,37 @@ export type CustomerAccessToken = {
 };
 export type CustomerAccessTokenOperation = {
   data: {
-    customerAccessToken: CustomerAccessToken;
-    customerUserErrors: {
-      code: string;
-      field: string;
-      message: string;
+    customerAccessTokenCreate: {
+      customerAccessToken: CustomerAccessToken;
+      customerUserErrors: {
+        code: string;
+        field: string;
+        message: string;
+      };
     };
   };
   variables: {
     input: CustomerAccessTokenCreateInput;
+  };
+};
+
+export type createCustomerInput = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+};
+
+export type createCustomerOperation = {
+  data: any;
+  variables: {
+    input: {
+      firstName: string;
+      lastName: string;
+      email: string;
+      password: string;
+      phone: string;
+    };
   };
 };

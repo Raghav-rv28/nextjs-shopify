@@ -5,5 +5,10 @@ export const loginSchema = z.object({
 });
 export type loginSchemaType = z.infer<typeof loginSchema>;
 
-// firstName: z.string(),
-// lastName: z.string(),
+export const signUpSchema = z.object({
+  email: z.string().email(),
+  firstName: z.string(),
+  lastName: z.string(),
+  password: z.string()
+});
+export type signUpSchemaType = z.infer<typeof signUpSchema>;

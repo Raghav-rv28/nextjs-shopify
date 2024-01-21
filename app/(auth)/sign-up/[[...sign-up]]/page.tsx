@@ -1,28 +1,54 @@
 'use client';
 
 import { useSignUp } from '@clerk/nextjs';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signUpSchema, signUpSchemaType } from 'Schema/authentication';
+import { Button } from 'components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
+import { Input } from 'components/ui/input';
+import { toast } from 'components/ui/use-toast';
+import { createCustomerFunction } from 'lib/shopify';
+import { createCustomerInput } from 'lib/shopify/types';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { ImSpinner2 } from 'react-icons/im';
+import * as z from 'zod';
 
 export default function Page() {
   const { isLoaded, signUp, setActive } = useSignUp();
-  const [emailAddress, setEmailAddress] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  // const [firstName, setFirstName] = React.useState('');
-  // const [lastName, setLastName] = React.useState('');
   const [verifying, setVerifying] = React.useState(false);
+  const [values, setValues] = React.useState<createCustomerInput>({
+    email: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+    phone: ''
+  });
   const [code, setCode] = React.useState('');
   const router = useRouter();
 
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema)
+  });
   // This function will handle the user submitting their email and password
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: signUpSchemaType) => {
     if (!isLoaded) return;
-
+    const { email, password, firstName, lastName } = values;
+    // SHOPIFY ADD ON
+    setValues({
+      firstName,
+      lastName,
+      email,
+      password,
+      phone: '+18036165148'
+    });
     // Start the sign-up process using the email and password provided
     try {
       await signUp.create({
-        emailAddress,
+        firstName,
+        lastName,
+        emailAddress: email,
         password
       });
 
@@ -61,10 +87,21 @@ export default function Page() {
       // If complete, the user has been created -- set the session active
       if (completeSignUp.status === 'complete') {
         await setActive({ session: completeSignUp.createdSessionId });
+        // SHOPIFY ADD ON
+        const valReturned = await createCustomerFunction(values);
+
+        console.log(JSON.stringify(valReturned));
         // Redirect the user to a post sign-up route
-        router.push('/');
+        router.push(`/`);
       }
     } catch (err: any) {
+      err.errors.map((error: any) => {
+        toast({
+          title: `${err.status} | ${error.message}`,
+          description: error.longMessage,
+          variant: 'destructive'
+        });
+      });
       // This can return an array of errors.
       // See https://clerk.com/docs/custom-flows/error-handling to learn about error handling
       console.error('Error:', JSON.stringify(err, null, 2));
@@ -84,32 +121,100 @@ export default function Page() {
 
   // Display the initial sign-up form to capture the email and password
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="email">Email address</label>
-        <input
-          id="email"
-          type="email"
-          name="email"
-          value={emailAddress}
-          onChange={(e) => setEmailAddress(e.target.value)}
-        />
-      </div>
-      <div>
-        <label className="mt-8 block text-sm" htmlFor="password">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <div>
-        <button type="submit">Verify Email</button>
-      </div>
-    </form>
+    <div className="flex-column mt-10 flex min-h-[50vh] w-full justify-center">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <div className="flex flex-row justify-between">
+            <FormField
+              name="firstName"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>First Name</FormLabel>
+                  <FormControl>
+                    <Input className="w-[225px]" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="lastName"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input className="w-[225px]" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormField
+            name="email"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input className="w-[500px]" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="password"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex justify-center pt-5">
+            <Button className="w-[75%]" type="submit" disabled={form.formState.isSubmitting}>
+              {!form.formState.isSubmitting && <span>Sign Up</span>}
+              {form.formState.isSubmitting && <ImSpinner2 className="animate-spin" />}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
+  // return (
+  //   <form onSubmit={handleSubmit}>
+  //     <div>
+  //       <label htmlFor="email">Email address</label>
+  //       <input
+  //         id="email"
+  //         type="email"
+  //         name="email"
+  //         value={emailAddress}
+  //         onChange={(e) => setEmailAddress(e.target.value)}
+  //       />
+  //     </div>
+  //     <div>
+  //       <label className="mt-8 block text-sm" htmlFor="password">
+  //         Password
+  //       </label>
+  //       <input
+  //         id="password"
+  //         type="password"
+  //         name="password"
+  //         value={password}
+  //         onChange={(e) => setPassword(e.target.value)}
+  //       />
+  //     </div>
+  //     <div>
+  //       <button type="submit">Verify Email</button>
+  //     </div>
+  //   </form>
+  // );
 }

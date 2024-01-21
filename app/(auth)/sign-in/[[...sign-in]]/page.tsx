@@ -1,19 +1,27 @@
 'use client';
 
-import { useSignIn } from '@clerk/nextjs';
+import { useSignIn, useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, loginSchemaType } from 'Schema/authentication';
+import { saveToCookies } from 'actions/signup';
 import { Button } from 'components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
 import { Input } from 'components/ui/input';
 import { toast } from 'components/ui/use-toast';
+import { getCustomerAccessToken } from 'lib/shopify';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ImSpinner2 } from 'react-icons/im';
 import * as z from 'zod';
 export default function SignInForm() {
   const { isLoaded, signIn, setActive } = useSignIn();
+  const { isSignedIn } = useUser();
   const router = useRouter();
+
+  useEffect(() => {
+    if (isSignedIn) router.push('/');
+  }, [router, isSignedIn]);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema)
@@ -45,11 +53,26 @@ export default function SignInForm() {
       if (completeSignIn.status === 'complete') {
         // If complete, user exists and provided password match -- set session active
         await setActive({ session: completeSignIn.createdSessionId });
+        // SHOPIFY ADD ON
+
+        const data = await getCustomerAccessToken({ email, password });
+        const { accessToken, expiresAt } =
+          data.body.data.customerAccessTokenCreate.customerAccessToken;
+        saveToCookies({
+          key: 'accessToken',
+          value: accessToken
+        });
+        saveToCookies({
+          key: 'expiresAt',
+          value: expiresAt.toString()
+        });
+
         // Redirect the user to a post sign-in route
         router.push('/');
       }
     } catch (err: any) {
-      err.errors.map((error: any) => {
+      console.log(err);
+      err?.errors.map((error: any) => {
         toast({
           title: `${err.status} | ${error.message}`,
           description: error.longMessage,

@@ -1,3 +1,4 @@
+'use server';
 import { HIDDEN_PRODUCT_TAG, SHOPIFY_GRAPHQL_API_ENDPOINT, TAGS } from 'lib/constants';
 import { isShopifyError } from 'lib/type-guards';
 import { ensureStartsWith } from 'lib/utils';
@@ -10,7 +11,7 @@ import {
   editCartItemsMutation,
   removeFromCartMutation
 } from './mutations/cart';
-import { customerAccessTokenCreate } from './mutations/customer';
+import { createCustomer, customerAccessTokenCreate } from './mutations/customer';
 import { getCartQuery } from './queries/cart';
 import {
   getCollectionProductsQuery,
@@ -28,6 +29,7 @@ import {
   Cart,
   Collection,
   Connection,
+  CustomerAccessTokenCreateInput,
   CustomerAccessTokenOperation,
   Image,
   Menu,
@@ -49,7 +51,9 @@ import {
   ShopifyProductRecommendationsOperation,
   ShopifyProductsOperation,
   ShopifyRemoveFromCartOperation,
-  ShopifyUpdateCartOperation
+  ShopifyUpdateCartOperation,
+  createCustomerInput,
+  createCustomerOperation
 } from './types';
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN
@@ -429,23 +433,21 @@ export async function getProducts({
 
 // MY OWN MAGIC
 
-export async function getCustomerAccessToken({
-  email,
-  password
-}: {
-  email: string;
-  password: string;
-}) {
-  try {
-    return await shopifyFetch<CustomerAccessTokenOperation>({
-      query: customerAccessTokenCreate,
-      variables: {
-        input: { email, password }
-      }
-    });
-  } catch (error) {
-    throw new Error();
-  }
+export async function getCustomerAccessToken({ email, password }: CustomerAccessTokenCreateInput) {
+  return await shopifyFetch<CustomerAccessTokenOperation>({
+    query: customerAccessTokenCreate,
+    variables: {
+      input: { email, password }
+    }
+  });
+}
+
+export async function createCustomerFunction(props: createCustomerInput) {
+  const req = await shopifyFetch<createCustomerOperation>({
+    query: createCustomer,
+    variables: { input: props }
+  });
+  return req.body.data;
 }
 
 // This is called from `app/api/revalidate.ts` so providers can control revalidation logic.
