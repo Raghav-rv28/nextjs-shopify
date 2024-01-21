@@ -1,3 +1,4 @@
+import { SignedIn } from '@clerk/nextjs';
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
 import {
   DropdownMenu,
@@ -5,10 +6,10 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger
 } from 'components/ui/dropdown-menu';
-export default async function Account() {
+import Link from 'next/link';
+export default function Account() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -21,10 +22,11 @@ export default async function Account() {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          Profile
-          <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          <Link href={'/sign-in'}>Login</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>Log out</DropdownMenuItem>
+        <SignedIn>
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+        </SignedIn>
       </DropdownMenuContent>
     </DropdownMenu>
   );
