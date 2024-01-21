@@ -4,8 +4,7 @@ import LoadingDots from 'components/loading-dots';
 import { ThemeProvider } from 'components/theme-provider';
 import { Toaster } from 'components/ui/toaster';
 import { GeistSans } from 'geist/font';
-import { cn, ensureStartsWith } from 'lib/utils';
-import { Inter as FontSans } from 'next/font/google';
+import { ensureStartsWith } from 'lib/utils';
 import { ReactNode, Suspense } from 'react';
 import './globals.css';
 
@@ -34,20 +33,12 @@ export const metadata = {
       }
     })
 };
-export const fontSans = FontSans({
-  subsets: ['latin'],
-  variable: '--font-sans'
-});
+
 export default async function RootLayout({ children }: { children: ReactNode }) {
   return (
     <ClerkProvider signInUrl={'http://localhost:3000/sign-in'}>
       <html lang="en" className={GeistSans.variable}>
-        <body
-          className={cn(
-            'bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white',
-            fontSans.variable
-          )}
-        >
+        <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
           <ThemeProvider attribute="class" defaultTheme="dark">
             <Navbar />
             <Suspense fallback={<LoadingDots className="text-lg text-orange-300" />}>
