@@ -1,4 +1,6 @@
 'use server';
+import { currentUser } from '@clerk/nextjs';
+import { PrismaClient } from '@prisma/client';
 import { HIDDEN_PRODUCT_TAG, SHOPIFY_GRAPHQL_API_ENDPOINT, TAGS } from 'lib/constants';
 import { isShopifyError } from 'lib/type-guards';
 import { ensureStartsWith } from 'lib/utils';
@@ -7,7 +9,8 @@ import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import {
   addToCartMutation,
-  createCartMutation,
+  createCartMutationOne,
+  createCartMutationTwo,
   editCartItemsMutation,
   removeFromCartMutation
 } from './mutations/cart';
@@ -42,7 +45,8 @@ import {
   ShopifyCollectionOperation,
   ShopifyCollectionProductsOperation,
   ShopifyCollectionsOperation,
-  ShopifyCreateCartOperation,
+  ShopifyCreateCartOperationOne,
+  ShopifyCreateCartOperationTwo,
   ShopifyMenuOperation,
   ShopifyPageOperation,
   ShopifyPagesOperation,
@@ -207,11 +211,38 @@ const reshapeProducts = (products: ShopifyProduct[]) => {
   return reshapedProducts;
 };
 
-export async function createCart(): Promise<Cart> {
-  const res = await shopifyFetch<ShopifyCreateCartOperation>({
-    query: createCartMutation,
-    cache: 'no-store'
-  });
+export async function createCart(): Promise<Cart | undefined> {
+  const prisma = new PrismaClient();
+  const user = await currentUser();
+  let userDetails = undefined;
+  console.log(`USER IN CREATE CART: ${user}`);
+  if (user !== null) {
+    userDetails = await prisma.user.findUnique({
+      where: {
+        email: user.emailAddresses[0]?.emailAddress
+      }
+    });
+  }
+  console.log(`IN CART: ${userDetails?.accessToken}`);
+  let res;
+  if (userDetails !== undefined && user !== null) {
+    res = await shopifyFetch<ShopifyCreateCartOperationTwo>({
+      query: createCartMutationOne,
+      variables: {
+        buyerIdentity: {
+          email: user.emailAddresses[0]?.emailAddress || '',
+          customerAccessToken: userDetails?.accessToken || '',
+          phone: '+18036165148'
+        }
+      },
+      cache: 'no-store'
+    });
+  } else {
+    res = await shopifyFetch<ShopifyCreateCartOperationOne>({
+      query: createCartMutationTwo,
+      cache: 'no-store'
+    });
+  }
 
   return reshapeCart(res.body.data.cartCreate.cart);
 }
@@ -433,13 +464,42 @@ export async function getProducts({
 
 // MY OWN MAGIC
 
-export async function getCustomerAccessToken({ email, password }: CustomerAccessTokenCreateInput) {
-  return await shopifyFetch<CustomerAccessTokenOperation>({
-    query: customerAccessTokenCreate,
-    variables: {
-      input: { email, password }
+export async function updateCustomerAccessToken({
+  email,
+  password
+}: CustomerAccessTokenCreateInput) {
+  let returnedData;
+  try {
+    returnedData = await shopifyFetch<CustomerAccessTokenOperation>({
+      query: customerAccessTokenCreate,
+      variables: {
+        input: { email, password }
+      }
+    });
+  } catch (error) {
+    console.log('error in token generation');
+  }
+  if (returnedData !== undefined) {
+    console.log(`SHIP : ${returnedData.body.data.customerAccessTokenCreate}`);
+    const { accessToken, expiresAt } =
+      returnedData.body.data.customerAccessTokenCreate.customerAccessToken;
+    let userUpdated;
+    try {
+      const prisma = new PrismaClient();
+      userUpdated = await prisma.user.update({
+        where: {
+          email: email
+        },
+        data: {
+          accessToken: accessToken,
+          expiresAt: expiresAt
+        }
+      });
+      console.log(userUpdated);
+    } catch (error) {
+      console.log('error in saving token');
     }
-  });
+  }
 }
 
 export async function createCustomerFunction(props: createCustomerInput) {

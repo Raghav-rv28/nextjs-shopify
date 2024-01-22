@@ -11,9 +11,9 @@ export const addToCartMutation = /* GraphQL */ `
   ${cartFragment}
 `;
 
-export const createCartMutation = /* GraphQL */ `
-  mutation createCart($lineItems: [CartLineInput!]) {
-    cartCreate(input: { lines: $lineItems }) {
+export const createCartMutationOne = /* GraphQL */ `
+  mutation createCart($lineItems: [CartLineInput!], $buyerIdentity: CartBuyerIdentityInput) {
+    cartCreate(input: { lines: $lineItems, buyerIdentity: $buyerIdentity }) {
       cart {
         ...cart
       }
@@ -22,6 +22,16 @@ export const createCartMutation = /* GraphQL */ `
   ${cartFragment}
 `;
 
+export const createCartMutationTwo = /* GraphQL */ `
+  mutation createCart($lineItems: [CartLineInput!], $buyerIdentity: CartBuyerIdentityInput) {
+    cartCreate(input: { lines: $lineItems, buyerIdentity: $buyerIdentity }) {
+      cart {
+        ...cart
+      }
+    }
+  }
+  ${cartFragment}
+`;
 export const editCartItemsMutation = /* GraphQL */ `
   mutation editCartItems($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
     cartLinesUpdate(cartId: $cartId, lines: $lines) {

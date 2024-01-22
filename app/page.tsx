@@ -1,5 +1,3 @@
-import { currentUser } from '@clerk/nextjs';
-import { getAllCookies } from 'actions/signup';
 import { Carousel } from 'components/carousel';
 import { ThreeItemGrid } from 'components/grid/three-items';
 import Footer from 'components/layout/footer';
@@ -13,12 +11,6 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const user = await currentUser();
-  if (user) {
-    const data = getAllCookies();
-    console.log(JSON.stringify(data));
-    console.log(typeof data);
-  }
   return (
     <>
       <ThreeItemGrid />

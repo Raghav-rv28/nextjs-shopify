@@ -2,6 +2,7 @@
 
 import { useSignUp } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { PrismaClient } from '@prisma/client';
 import { signUpSchema, signUpSchemaType } from 'Schema/authentication';
 import { Button } from 'components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
@@ -27,7 +28,7 @@ export default function Page() {
   });
   const [code, setCode] = React.useState('');
   const router = useRouter();
-
+  const prisma = new PrismaClient();
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema)
   });
@@ -89,8 +90,14 @@ export default function Page() {
         await setActive({ session: completeSignUp.createdSessionId });
         // SHOPIFY ADD ON
         const valReturned = await createCustomerFunction(values);
-
-        console.log(JSON.stringify(valReturned));
+        if (valReturned === undefined)
+          await prisma.user.create({
+            data: {
+              firstName: values.firstName,
+              email: values.email,
+              lastName: values.lastName
+            }
+          });
         // Redirect the user to a post sign-up route
         router.push(`/`);
       }

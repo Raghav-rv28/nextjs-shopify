@@ -3,12 +3,11 @@
 import { useSignIn, useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, loginSchemaType } from 'Schema/authentication';
-import { saveToCookies } from 'actions/signup';
 import { Button } from 'components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
 import { Input } from 'components/ui/input';
 import { toast } from 'components/ui/use-toast';
-import { getCustomerAccessToken } from 'lib/shopify';
+import { updateCustomerAccessToken } from 'lib/shopify';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -55,18 +54,8 @@ export default function SignInForm() {
         await setActive({ session: completeSignIn.createdSessionId });
         // SHOPIFY ADD ON
 
-        const data = await getCustomerAccessToken({ email, password });
-        const { accessToken, expiresAt } =
-          data.body.data.customerAccessTokenCreate.customerAccessToken;
-        saveToCookies({
-          key: 'accessToken',
-          value: accessToken
-        });
-        saveToCookies({
-          key: 'expiresAt',
-          value: expiresAt.toString()
-        });
-
+        await updateCustomerAccessToken({ email, password });
+        // send data to database
         // Redirect the user to a post sign-in route
         router.push('/');
       }

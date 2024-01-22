@@ -7,7 +7,6 @@ import { GeistSans } from 'geist/font';
 import { ensureStartsWith } from 'lib/utils';
 import { ReactNode, Suspense } from 'react';
 import './globals.css';
-
 const { TWITTER_CREATOR, TWITTER_SITE, SITE_NAME } = process.env;
 const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
@@ -35,6 +34,18 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
+  // const user = await currentUser();
+  // const prisma = new PrismaClient();
+  // const getUserData = async () => {
+  //   if (user) {
+  //     const userDetails = await prisma.user.findUnique({
+  //       where: {
+  //         email: user.emailAddresses[0]?.emailAddress
+  //       }
+  //     });
+  //     return userDetails;
+  //   }
+  // };
   return (
     <ClerkProvider signInUrl={'http://localhost:3000/sign-in'}>
       <html lang="en" className={GeistSans.variable}>

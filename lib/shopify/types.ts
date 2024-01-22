@@ -141,8 +141,19 @@ export type ShopifyCartOperation = {
   };
 };
 
-export type ShopifyCreateCartOperation = {
+export type ShopifyCreateCartOperationOne = {
   data: { cartCreate: { cart: ShopifyCart } };
+};
+
+export type ShopifyCreateCartOperationTwo = {
+  data: { cartCreate: { cart: ShopifyCart } };
+  variables: {
+    buyerIdentity: {
+      email: string;
+      customerAccessToken: string;
+      phone: string;
+    };
+  };
 };
 
 export type ShopifyAddToCartOperation = {
@@ -266,8 +277,8 @@ export type ShopifyProductsOperation = {
 };
 // MY OWN MAGIC
 export type CustomerAccessTokenCreateInput = {
-  email: String;
-  password: String;
+  email: string;
+  password: string;
 };
 
 export type CustomerAccessToken = {
@@ -310,3 +321,5 @@ export type createCustomerOperation = {
     };
   };
 };
+
+export type buyerIdentityInput = {};
