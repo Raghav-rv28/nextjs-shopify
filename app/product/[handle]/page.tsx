@@ -9,7 +9,6 @@ import { ProductDescription } from 'components/product/product-description';
 import { HIDDEN_PRODUCT_TAG } from 'lib/constants';
 import { getProduct, getProductRecommendations } from 'lib/shopify';
 import { Image } from 'lib/shopify/types';
-import Link from 'next/link';
 
 export async function generateMetadata({
   params
@@ -119,10 +118,11 @@ async function RelatedProducts({ id }: { id: string }) {
             key={product.handle}
             className="aspect-square w-full flex-none min-[475px]:w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5"
           >
-            <Link className="relative h-full w-full" href={`/product/${product.handle}`}>
+            <div className="relative h-full w-full">
               <GridTileImage
                 alt={product.title}
                 label={{
+                  url: `/product/${product.handle}`,
                   title: product.title,
                   amount: product.priceRange.maxVariantPrice.amount,
                   currencyCode: product.priceRange.maxVariantPrice.currencyCode,
@@ -133,7 +133,7 @@ async function RelatedProducts({ id }: { id: string }) {
                 fill
                 sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
               />
-            </Link>
+            </div>
           </li>
         ))}
       </ul>
