@@ -1,6 +1,6 @@
 'use client';
 
-import { useSignUp } from '@clerk/nextjs';
+import { useAuth, useSignUp } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PrismaClient } from '@prisma/client';
 import { signUpSchema, signUpSchemaType } from 'Schema/authentication';
@@ -17,7 +17,7 @@ import { ImSpinner2 } from 'react-icons/im';
 import * as z from 'zod';
 
 export default function Page() {
-  const { isLoaded, signUp, setActive } = useSignUp();
+  const { isLoaded: signUpStatus, signUp, setActive } = useSignUp();
   const [verifying, setVerifying] = React.useState(false);
   const [values, setValues] = React.useState<createCustomerInput>({
     email: '',
@@ -32,9 +32,18 @@ export default function Page() {
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema)
   });
+  const { isLoaded, userId } = useAuth();
+
+  // Send user to home page if already signed in.
+  React.useEffect(() => {
+    console.log(isLoaded, userId);
+    if (userId !== null && isLoaded) {
+      router.push('/');
+    }
+  }, [userId, isLoaded, router]);
   // This function will handle the user submitting their email and password
   const onSubmit = async (values: signUpSchemaType) => {
-    if (!isLoaded) return;
+    if (!signUpStatus) return;
     const { email, password, firstName, lastName } = values;
     // SHOPIFY ADD ON
     setValues({
@@ -70,7 +79,7 @@ export default function Page() {
   // This function will handle the user submitting a code for verification
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isLoaded) return;
+    if (!signUpStatus) return;
 
     try {
       // Submit the code that the user provides to attempt verification
@@ -195,33 +204,4 @@ export default function Page() {
       </Form>
     </div>
   );
-  // return (
-  //   <form onSubmit={handleSubmit}>
-  //     <div>
-  //       <label htmlFor="email">Email address</label>
-  //       <input
-  //         id="email"
-  //         type="email"
-  //         name="email"
-  //         value={emailAddress}
-  //         onChange={(e) => setEmailAddress(e.target.value)}
-  //       />
-  //     </div>
-  //     <div>
-  //       <label className="mt-8 block text-sm" htmlFor="password">
-  //         Password
-  //       </label>
-  //       <input
-  //         id="password"
-  //         type="password"
-  //         name="password"
-  //         value={password}
-  //         onChange={(e) => setPassword(e.target.value)}
-  //       />
-  //     </div>
-  //     <div>
-  //       <button type="submit">Verify Email</button>
-  //     </div>
-  //   </form>
-  // );
 }

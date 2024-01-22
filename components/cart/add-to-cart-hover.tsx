@@ -1,6 +1,5 @@
 'use client';
 
-import { PlusIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { addItem } from 'components/cart/actions';
 import LoadingDots from 'components/loading-dots';
@@ -17,7 +16,7 @@ function SubmitButton({
 }) {
   const { pending } = useFormStatus();
   const buttonClasses =
-    'relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 text-white';
+    'relative flex w-full items-center justify-center rounded-full bg-blue-600 p-2 text-white hidden group-hover:block';
   const disabledClasses = 'cursor-not-allowed opacity-60 hover:opacity-60';
 
   if (!availableForSale) {
@@ -35,10 +34,7 @@ function SubmitButton({
         aria-disabled
         className={clsx(buttonClasses, disabledClasses)}
       >
-        <div className="absolute left-0 ml-4">
-          <PlusIcon className="h-5" />
-        </div>
-        Add To Cart
+        Add To Cart +
       </button>
     );
   }
@@ -55,15 +51,12 @@ function SubmitButton({
         disabledClasses: pending
       })}
     >
-      <div className="absolute left-0 ml-4">
-        {pending ? <LoadingDots className="mb-3 bg-white" /> : <PlusIcon className="h-5" />}
-      </div>
-      Add To Cart
+      {pending ? <LoadingDots className="mb-3 bg-white" /> : <p>Add To Cart +</p>}
     </button>
   );
 }
 
-export function AddToCart({
+export function AddToCartHover({
   variants,
   availableForSale
 }: {
