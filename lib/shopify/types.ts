@@ -124,6 +124,13 @@ export type ShopifyProduct = {
     maxVariantPrice: Money;
     minVariantPrice: Money;
   };
+  metafields: {
+    id: string;
+    key: string;
+    value: string;
+    type: string;
+    namespace: string;
+  };
   variants: Connection<ProductVariant>;
   featuredImage: Image;
   images: Connection<Image>;

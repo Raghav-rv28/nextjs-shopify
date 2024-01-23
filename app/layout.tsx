@@ -5,6 +5,7 @@ import { ThemeProvider } from 'components/theme-provider';
 import { Toaster } from 'components/ui/toaster';
 import { GeistSans } from 'geist/font';
 import { ensureStartsWith } from 'lib/utils';
+import NextTopLoader from 'nextjs-toploader';
 import { ReactNode, Suspense } from 'react';
 import './globals.css';
 const { TWITTER_CREATOR, TWITTER_SITE, SITE_NAME } = process.env;
@@ -51,6 +52,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <html lang="en" className={GeistSans.variable}>
         <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
           <ThemeProvider attribute="class" defaultTheme="dark">
+            <NextTopLoader />
             <Navbar />
             <Suspense fallback={<LoadingDots className="text-lg text-orange-300" />}>
               <main>

@@ -14,6 +14,13 @@ const productFragment = /* GraphQL */ `
       name
       values
     }
+    metafields(identifiers: [{ namespace: "custom", key: "jewellery_type" }]) {
+      id
+      key
+      namespace
+      type
+      value
+    }
     priceRange {
       maxVariantPrice {
         amount
@@ -57,6 +64,7 @@ const productFragment = /* GraphQL */ `
     tags
     updatedAt
   }
+
   ${imageFragment}
   ${seoFragment}
 `;

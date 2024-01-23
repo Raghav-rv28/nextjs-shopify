@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import Image from 'next/image';
+import Link from 'next/link';
 import Label from '../label';
 
 export function GridTileImage({
@@ -33,16 +34,17 @@ export function GridTileImage({
     >
       {props.src ? (
         // eslint-disable-next-line jsx-a11y/alt-text -- `alt` is inherited from `props`, which is being enforced with TypeScript
-        <Image
-          className={clsx('relative h-full w-full object-contain', {
-            'transition duration-300 ease-in-out group-hover:scale-105': isInteractive
-          })}
-          {...props}
-        />
+        <Link href={label?.url || '/'}>
+          <Image
+            className={clsx('relative h-full w-full object-contain', {
+              'transition duration-300 ease-in-out group-hover:scale-105': isInteractive
+            })}
+            {...props}
+          />
+        </Link>
       ) : null}
       {label ? (
         <Label
-          url={label.url}
           title={label.title}
           amount={label.amount}
           currencyCode={label.currencyCode}
