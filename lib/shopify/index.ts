@@ -12,7 +12,8 @@ import {
   createCartMutationOne,
   createCartMutationTwo,
   editCartItemsMutation,
-  removeFromCartMutation
+  removeFromCartMutation,
+  updateCartBuyerIdentity
 } from './mutations/cart';
 import { createCustomer, customerAccessTokenCreate } from './mutations/customer';
 import { getCartQuery } from './queries/cart';
@@ -55,6 +56,7 @@ import {
   ShopifyProductRecommendationsOperation,
   ShopifyProductsOperation,
   ShopifyRemoveFromCartOperation,
+  ShopifyUpdateBuyerIdentityOperation,
   ShopifyUpdateCartOperation,
   createCustomerInput,
   createCustomerOperation
@@ -290,6 +292,38 @@ export async function updateCart(
 
   return reshapeCart(res.body.data.cartLinesUpdate.cart);
 }
+export async function updateCartBuyer(cartId: string) {
+  const prisma = new PrismaClient();
+  const user = await currentUser();
+  let userDetails = undefined;
+  console.log(`USER IN CREATE CART: ${user}`);
+
+  if (user !== null) {
+    try {
+      userDetails = await prisma.user.findUnique({
+        where: {
+          email: user.emailAddresses[0]?.emailAddress
+        }
+      });
+    } catch (error) {
+      console.log(`Error while fetching user data, ${user.emailAddresses[0]?.emailAddress}`);
+    }
+
+    await shopifyFetch<ShopifyUpdateBuyerIdentityOperation>({
+      query: updateCartBuyerIdentity,
+      variables: {
+        cartId,
+        buyerIdentity: {
+          email: user.emailAddresses[0]?.emailAddress || '',
+          customerAccessToken: userDetails?.accessToken || '',
+          phone: '+18036165148'
+        }
+      },
+      cache: 'no-store'
+    });
+  }
+  console.log(`IN CART: ${userDetails?.accessToken}`);
+}
 
 export async function getCart(cartId: string): Promise<Cart | undefined> {
   const res = await shopifyFetch<ShopifyCartOperation>({
@@ -303,7 +337,10 @@ export async function getCart(cartId: string): Promise<Cart | undefined> {
   if (!res.body.data.cart) {
     return undefined;
   }
-
+  console.log(res.body.data.cart.buyerIdentity);
+  if (res.body.data.cart.buyerIdentity.email === null) {
+    await updateCartBuyer(cartId);
+  }
   return reshapeCart(res.body.data.cart);
 }
 
@@ -468,17 +505,12 @@ export async function updateCustomerAccessToken({
   email,
   password
 }: CustomerAccessTokenCreateInput) {
-  let returnedData;
-  try {
-    returnedData = await shopifyFetch<CustomerAccessTokenOperation>({
-      query: customerAccessTokenCreate,
-      variables: {
-        input: { email, password }
-      }
-    });
-  } catch (error) {
-    console.log('error in token generation');
-  }
+  const returnedData = await shopifyFetch<CustomerAccessTokenOperation>({
+    query: customerAccessTokenCreate,
+    variables: {
+      input: { email, password }
+    }
+  });
   if (returnedData !== undefined) {
     console.log(`SHIP : ${returnedData.body.data.customerAccessTokenCreate}`);
     const { accessToken, expiresAt } =

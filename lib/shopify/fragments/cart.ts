@@ -18,6 +18,9 @@ const cartFragment = /* GraphQL */ `
         currencyCode
       }
     }
+    buyerIdentity {
+      email
+    }
     lines(first: 100) {
       edges {
         node {
