@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from 'components/ui/input';
 import { toast } from 'components/ui/use-toast';
 import { updateCustomerAccessToken } from 'lib/shopify';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -75,7 +76,7 @@ export default function SignInForm() {
 
   // Display a form to capture the user's email and password
   return (
-    <div className="flex-column mt-10 flex min-h-[50vh] w-full justify-center">
+    <div className="mt-10 flex min-h-[50vh] w-full flex-col items-center justify-center">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <FormField
@@ -98,7 +99,7 @@ export default function SignInForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <Input type="password" className="w-[300px]" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -112,6 +113,12 @@ export default function SignInForm() {
           </div>
         </form>
       </Form>
+      <p className="m-5 w-full text-center text-sm">
+        Don`&apos;t have an Account?
+        <Link className="ml-2 text-blue-400 hover:underline" href="/sign-up">
+          Sign Up
+        </Link>
+      </p>
     </div>
   );
 }

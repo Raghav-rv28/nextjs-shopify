@@ -8,8 +8,9 @@ import { Button } from 'components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
 import { Input } from 'components/ui/input';
 import { toast } from 'components/ui/use-toast';
-import { createCustomerFunction } from 'lib/shopify';
+import { createCustomerFunction, updateCustomerAccessToken } from 'lib/shopify';
 import { createCustomerInput } from 'lib/shopify/types';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
@@ -76,8 +77,7 @@ export default function Page() {
   };
 
   // This function will handle the user submitting a code for verification
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleVerify = async () => {
     if (!signUpStatus) return;
 
     try {
@@ -106,6 +106,7 @@ export default function Page() {
               lastName: values.lastName
             }
           });
+        await updateCustomerAccessToken({ email: values.email, password: values.password });
         // Redirect the user to a post sign-up route
         router.push(`/`);
       }
@@ -126,20 +127,45 @@ export default function Page() {
   // Once the sign-up form was submitted, verifying was set to true and as a result, this verification form is presented to the user to input their verification code.
   if (verifying) {
     return (
-      <form onSubmit={handleVerify}>
-        <label id="code">Code</label>
-        <input value={code} id="code" name="code" onChange={(e) => setCode(e.target.value)} />
-        <button type="submit">Complete Sign Up</button>
-      </form>
+      <div className="mt-10 flex min-h-[50vh] w-full flex-col items-center justify-center">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleVerify)} className="space-y-2">
+            <FormField
+              name="firstName"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Verification Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={code}
+                      id="code"
+                      name="code"
+                      onChange={(e) => setCode(e.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-center pt-5">
+              <Button className="w-[75%]" type="submit">
+                Complete Sign Up
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     );
   }
 
   // Display the initial sign-up form to capture the email and password
   return (
-    <div className="flex-column mt-10 flex min-h-[50vh] w-full justify-center">
+    <div className="mt-10 flex min-h-[50vh] w-full flex-col items-center justify-center">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-col flex-wrap justify-between md:flex-row ">
             <FormField
               name="firstName"
               control={form.control}
@@ -147,7 +173,7 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input className="w-[225px]" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -158,9 +184,9 @@ export default function Page() {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel className="md:ml-3">Last Name</FormLabel>
                   <FormControl>
-                    <Input className="w-[225px]" {...field} />
+                    <Input {...field} className="md:ml-2" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -174,7 +200,7 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input className="w-[500px]" {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -200,6 +226,12 @@ export default function Page() {
             </Button>
           </div>
         </form>
+        <p className="m-5 w-full text-center text-sm">
+          Already have an Account?
+          <Link className="ml-2 text-blue-400 hover:underline" href="/sign-in">
+            Login In
+          </Link>
+        </p>
       </Form>
     </div>
   );
