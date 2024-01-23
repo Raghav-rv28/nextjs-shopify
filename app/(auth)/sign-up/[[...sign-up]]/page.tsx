@@ -36,7 +36,6 @@ export default function Page() {
 
   // Send user to home page if already signed in.
   React.useEffect(() => {
-    console.log(isLoaded, userId);
     if (userId !== null && isLoaded) {
       router.push('/');
     }

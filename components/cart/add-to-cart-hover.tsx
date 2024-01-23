@@ -26,7 +26,6 @@ function SubmitButton({
       </button>
     );
   }
-
   if (!selectedVariantId) {
     return (
       <button
@@ -34,7 +33,7 @@ function SubmitButton({
         aria-disabled
         className={clsx(buttonClasses, disabledClasses)}
       >
-        Add To Cart +
+        Add To Cart
       </button>
     );
   }
@@ -51,7 +50,7 @@ function SubmitButton({
         disabledClasses: pending
       })}
     >
-      {pending ? <LoadingDots className="mb-3 bg-white" /> : <p>Add To Cart +</p>}
+      {pending ? <LoadingDots className="mb-3 bg-white" /> : <p>Add To Cart</p>}
     </button>
   );
 }
@@ -63,7 +62,6 @@ export function AddToCartHover({
   variants: ProductVariant[];
   availableForSale: boolean;
 }) {
-  console.log(variants);
   const [message, formAction] = useFormState(addItem, null);
   const searchParams = useSearchParams();
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;

@@ -12,7 +12,7 @@ const { SITE_NAME } = process.env;
 
 export default async function Navbar() {
   const menu = await getMenu('main-menu');
-
+  console.log(menu);
   return (
     <nav className="relative flex items-center justify-between p-4 lg:justify-between lg:px-6">
       <div className="block flex-none lg:hidden">
@@ -28,16 +28,18 @@ export default async function Navbar() {
           </Link>
           {menu.length ? (
             <ul className="hidden gap-6 text-sm lg:flex lg:items-center">
-              {menu.map((item: Menu) => (
-                <li key={item.title}>
-                  <Link
-                    href={item.url}
-                    className="whitespace-nowrap text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
+              {menu
+                .filter((item: Menu) => item.title !== 'Our Products')
+                .map((item: Menu) => (
+                  <li key={item.title}>
+                    <Link
+                      href={item.url}
+                      className="whitespace-nowrap text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           ) : null}
         </div>

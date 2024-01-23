@@ -1,4 +1,4 @@
-import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { SignedIn, SignedOut, currentUser } from '@clerk/nextjs';
 import { Avatar, AvatarFallback, AvatarImage } from 'components/ui/avatar';
 import {
   DropdownMenu,
@@ -10,7 +10,8 @@ import {
 } from 'components/ui/dropdown-menu';
 import Link from 'next/link';
 import SignOutButton from './sign-out';
-export default function Account() {
+export default async function Account() {
+  const user = await currentUser();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -20,12 +21,13 @@ export default function Account() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         {/* NAVIGATION */}
         <SignedIn>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuLabel>{`${user?.firstName} ${user?.lastName}`}</DropdownMenuLabel>
+          <DropdownMenuLabel>{user?.emailAddresses[0]?.emailAddress}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
         </SignedIn>
+
         {/* LOGIN  */}
         <DropdownMenuItem>
           <SignedIn>

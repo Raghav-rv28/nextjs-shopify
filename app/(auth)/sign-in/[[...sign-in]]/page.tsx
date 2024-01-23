@@ -41,7 +41,6 @@ export default function SignInForm() {
       if (completeSignIn.status !== 'complete') {
         // The status can also be `needs_factor_on', 'needs_factor_two', or 'needs_identifier'
         // Please see https://clerk.com/docs/references/react/use-sign-in#result-status for  more information
-        console.log(JSON.stringify(completeSignIn));
         toast({
           title: completeSignIn.status as string,
           description: 'Something went wrong, please try again later!',

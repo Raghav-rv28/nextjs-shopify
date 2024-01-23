@@ -495,7 +495,7 @@ export async function updateCustomerAccessToken({
           expiresAt: expiresAt
         }
       });
-      console.log(userUpdated);
+      console.log(`User token has been updated: ${userUpdated}`);
     } catch (error) {
       console.log('error in saving token');
     }
