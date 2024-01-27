@@ -85,7 +85,7 @@ export default function SignInForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input className="w-[300px]" {...field} />
+                  <Input type="email" className="w-[300px]" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

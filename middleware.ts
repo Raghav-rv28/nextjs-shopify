@@ -5,28 +5,7 @@ import { authMiddleware } from '@clerk/nextjs';
 // See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your Middleware
 export default authMiddleware({
   debug: false,
-  publicRoutes: (req) => {
-    let returnVal = false;
-    if (
-      req.url === 'https://dj-teststore-nextjs-rupq.vercel.app/' ||
-      req.url === 'http://localhost:3000/'
-    )
-      return !returnVal;
-    [
-      '/sign-in',
-      '/sign-up',
-      '/product',
-      '/search',
-      '/collection',
-      '/pages',
-      '/account/login'
-    ].forEach((val) => {
-      if (req.url.includes(val)) {
-        returnVal = true;
-      }
-    });
-    return returnVal;
-  }
+  publicRoutes: () => true
 });
 
 export const config = {

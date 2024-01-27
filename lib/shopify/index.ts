@@ -337,10 +337,7 @@ export async function getCart(cartId: string): Promise<Cart | undefined> {
   if (!res.body.data.cart) {
     return undefined;
   }
-  console.log(res.body.data.cart.buyerIdentity);
-  if (res.body.data.cart.buyerIdentity.email === null) {
-    await updateCartBuyer(cartId);
-  }
+  // console.log(res.body.data.cart.buyerIdentity);
   return reshapeCart(res.body.data.cart);
 }
 
@@ -505,14 +502,17 @@ export async function updateCustomerAccessToken({
   email,
   password
 }: CustomerAccessTokenCreateInput) {
+  console.log('entering updateCustomer');
   const returnedData = await shopifyFetch<CustomerAccessTokenOperation>({
     query: customerAccessTokenCreate,
     variables: {
       input: { email, password }
     }
   });
+  console.log(
+    `creating customer token using shopify API : ${JSON.stringify(returnedData.body.data)}`
+  );
   if (returnedData !== undefined) {
-    console.log(`SHIP : ${returnedData.body.data.customerAccessTokenCreate}`);
     const { accessToken, expiresAt } =
       returnedData.body.data.customerAccessTokenCreate.customerAccessToken;
     let userUpdated;
@@ -539,6 +539,7 @@ export async function createCustomerFunction(props: createCustomerInput) {
     query: createCustomer,
     variables: { input: props }
   });
+  console.log(JSON.stringify(req.body.data));
   return req.body.data;
 }
 

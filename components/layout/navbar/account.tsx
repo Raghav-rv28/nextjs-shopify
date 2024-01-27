@@ -37,6 +37,11 @@ export default async function Account() {
             <Link href={'/sign-in'}>Login</Link>
           </SignedOut>
         </DropdownMenuItem>
+        <SignedOut>
+          <DropdownMenuItem>
+            <Link href={'/sign-up'}>Sign Up</Link>
+          </DropdownMenuItem>
+        </SignedOut>
       </DropdownMenuContent>
     </DropdownMenu>
   );

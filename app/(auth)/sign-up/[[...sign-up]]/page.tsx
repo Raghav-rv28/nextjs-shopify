@@ -28,6 +28,7 @@ export default function Page() {
     phone: ''
   });
   const [code, setCode] = React.useState('');
+  const [phoneCode, setPhoneCode] = React.useState('');
   const router = useRouter();
   const prisma = new PrismaClient();
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -41,17 +42,18 @@ export default function Page() {
       router.push('/');
     }
   }, [userId, isLoaded, router]);
+
   // This function will handle the user submitting their email and password
   const onSubmit = async (values: signUpSchemaType) => {
     if (!signUpStatus) return;
-    const { email, password, firstName, lastName } = values;
+    const { email, password, firstName, lastName, phone } = values;
     // SHOPIFY ADD ON
     setValues({
       firstName,
       lastName,
       email,
       password,
-      phone: '+18036165148'
+      phone
     });
     // Start the sign-up process using the email and password provided
     try {
@@ -59,7 +61,8 @@ export default function Page() {
         firstName,
         lastName,
         emailAddress: email,
-        password
+        password,
+        phoneNumber: phone
       });
 
       // Send the user an email with the verification code
@@ -67,9 +70,17 @@ export default function Page() {
         strategy: 'email_code'
       });
 
+      await signUp.preparePhoneNumberVerification({
+        strategy: 'phone_code'
+      });
       // Set 'verifying' true to display second form and capture the OTP code
       setVerifying(true);
     } catch (err: any) {
+      toast({
+        title: `${err.status} | ${JSON.stringify(err?.errors[0].meta)} ${err?.errors[0].message}`,
+        description: err?.errors[0].longMessage,
+        variant: 'destructive'
+      });
       // This can return an array of errors.
       // See https://clerk.com/docs/custom-flows/error-handling to learn about error handling
       console.error('Error:', JSON.stringify(err, null, 2));
@@ -86,31 +97,38 @@ export default function Page() {
         code
       });
 
-      if (completeSignUp.status !== 'complete') {
+      const completePhoneSignUp = await signUp.attemptPhoneNumberVerification({
+        code: phoneCode
+      });
+      if (completeSignUp.status !== 'complete' && completePhoneSignUp.status !== 'complete') {
         // The status can also be `abandoned` or `missing_requirements`
         // Please see https://clerk.com/docs/references/react/use-sign-up#result-status for  more information
         console.log(JSON.stringify(completeSignUp, null, 2));
+        console.log(JSON.stringify(completePhoneSignUp, null, 2));
       }
 
       // Check the status to see if it is complete
       // If complete, the user has been created -- set the session active
-      if (completeSignUp.status === 'complete') {
+      if (completeSignUp.status === 'complete' && completePhoneSignUp.status === 'complete') {
         await setActive({ session: completeSignUp.createdSessionId });
         // SHOPIFY ADD ON
         const valReturned = await createCustomerFunction(values);
-        if (valReturned === undefined)
-          await prisma.user.create({
-            data: {
-              firstName: values.firstName,
-              email: values.email,
-              lastName: values.lastName
-            }
-          });
+        console.log(JSON.stringify(valReturned));
+        const res = await prisma.user.create({
+          data: {
+            firstName: values.firstName,
+            email: values.email,
+            lastName: values.lastName,
+            phone: values.phone
+          }
+        });
+        console.log(`USER SAVED IN PRISMA: ${res}`);
         await updateCustomerAccessToken({ email: values.email, password: values.password });
         // Redirect the user to a post sign-up route
         router.push(`/`);
       }
     } catch (err: any) {
+      console.error('Error:', JSON.stringify(err, null, 2));
       err.errors.map((error: any) => {
         toast({
           title: `${err.status} | ${error.message}`,
@@ -120,7 +138,6 @@ export default function Page() {
       });
       // This can return an array of errors.
       // See https://clerk.com/docs/custom-flows/error-handling to learn about error handling
-      console.error('Error:', JSON.stringify(err, null, 2));
     }
   };
 
@@ -135,14 +152,24 @@ export default function Page() {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Verification Code</FormLabel>
+                  <FormLabel>Email: Verification Code</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       value={code}
-                      id="code"
-                      name="code"
+                      id="email_code"
+                      name="email_code"
                       onChange={(e) => setCode(e.target.value)}
+                    />
+                  </FormControl>
+                  <FormLabel>Phone Verification Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={phoneCode}
+                      id="phone_code"
+                      name="phone_code"
+                      onChange={(e) => setPhoneCode(e.target.value)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -173,7 +200,7 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input id="firstName" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -186,7 +213,7 @@ export default function Page() {
                 <FormItem>
                   <FormLabel className="md:ml-3">Last Name</FormLabel>
                   <FormControl>
-                    <Input {...field} className="md:ml-2" />
+                    <Input id="lastName" {...field} className="md:ml-2" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -200,7 +227,20 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input type="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="phone"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone No.</FormLabel>
+                <FormControl>
+                  <Input type="text" inputMode="numeric" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -213,7 +253,7 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

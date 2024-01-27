@@ -49,8 +49,8 @@ export default async function Navbar() {
           <Suspense fallback={<OpenCart />}>
             <span className="hidden lg:flex">
               <ThemeSwitcher />
-              <Account />
             </span>
+            <Account />
             <Cart />
           </Suspense>
         </div>

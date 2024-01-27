@@ -16,6 +16,7 @@ model User {
   email       String    @unique
   firstName   String
   lastName    String
+  phone       String?
   accessToken String?
   expiresAt   DateTime?
 }
