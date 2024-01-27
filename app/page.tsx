@@ -1,3 +1,5 @@
+import Collections from 'components/Home/collections';
+import HeroSection from 'components/Home/hero-section';
 import { Carousel } from 'components/carousel';
 import { ThreeItemGrid } from 'components/grid/three-items';
 import Footer from 'components/layout/footer';
@@ -14,7 +16,11 @@ export const metadata = {
 export default async function HomePage() {
   return (
     <>
+      <HeroSection />
+      {/* Add a designer Separator */}
+      <Collections />
       <ThreeItemGrid />
+      {/* Add a designer Separator */}
       <Suspense fallback={<Loading />}>
         <Carousel />
         <Suspense>
