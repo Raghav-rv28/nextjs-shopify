@@ -1,4 +1,5 @@
 import Collections from 'components/Home/collections';
+import Divider from 'components/Home/divider';
 import HeroSection from 'components/Home/hero-section';
 import { Carousel } from 'components/carousel';
 import { ThreeItemGrid } from 'components/grid/three-items';
@@ -17,10 +18,12 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection />
-      {/* Add a designer Separator */}
+      <Divider />
       <Collections />
+      <Divider />
+      <h1 className="my-10 w-full text-center text-5xl">Best Selling Products</h1>
       <ThreeItemGrid />
-      {/* Add a designer Separator */}
+      <Divider />
       <Suspense fallback={<Loading />}>
         <Carousel />
         <Suspense>
