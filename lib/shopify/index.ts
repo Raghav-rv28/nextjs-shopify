@@ -497,7 +497,12 @@ export async function getProducts({
 }
 
 // MY OWN MAGIC
-
+/**
+ * updates customer access token using Shopify query "customerAccessTokenCreate" and saving it in database using prisma.
+ * @param email User's Email
+ * @param password Users password
+ * @returns null
+ */
 export async function updateCustomerAccessToken({
   email,
   password

@@ -65,16 +65,30 @@ export default function Page() {
         phoneNumber: phone
       });
 
-      // Send the user an email with the verification code
-      await signUp.prepareEmailAddressVerification({
-        strategy: 'email_code'
-      });
+      const valReturned = await createCustomerFunction(values);
+      if (valReturned.customerCreate.customerUserErrors.length > 0) {
+        valReturned.customerCreate.customerUserErrors.map(
+          (val: { code: string; field: Array<string>; message: string }) => {
+            toast({
+              title: `${val.code} - ${val.field}`,
+              description: val.message
+            });
+          },
+          []
+        );
+        throw new Error('something wrong while creating shopify user account');
+      } else {
+        // Send the user an email with the verification code
+        await signUp.prepareEmailAddressVerification({
+          strategy: 'email_code'
+        });
 
-      await signUp.preparePhoneNumberVerification({
-        strategy: 'phone_code'
-      });
-      // Set 'verifying' true to display second form and capture the OTP code
-      setVerifying(true);
+        await signUp.preparePhoneNumberVerification({
+          strategy: 'phone_code'
+        });
+        // Set 'verifying' true to display second form and capture the OTP code
+        setVerifying(true);
+      }
     } catch (err: any) {
       toast({
         title: `${err.status} | ${JSON.stringify(err?.errors[0].meta)} ${err?.errors[0].message}`,
@@ -100,20 +114,14 @@ export default function Page() {
       const completePhoneSignUp = await signUp.attemptPhoneNumberVerification({
         code: phoneCode
       });
-      if (completeSignUp.status !== 'complete' && completePhoneSignUp.status !== 'complete') {
-        // The status can also be `abandoned` or `missing_requirements`
-        // Please see https://clerk.com/docs/references/react/use-sign-up#result-status for  more information
+      // The status can also be `abandoned` or `missing_requirements`
+      // Please see https://clerk.com/docs/references/react/use-sign-up#result-status for  more information
+      if (completeSignUp.status !== 'complete') {
         console.log(JSON.stringify(completeSignUp, null, 2));
-        console.log(JSON.stringify(completePhoneSignUp, null, 2));
       }
-
-      // Check the status to see if it is complete
-      // If complete, the user has been created -- set the session active
+      console.log(JSON.stringify(completePhoneSignUp, null, 2));
       if (completeSignUp.status === 'complete' && completePhoneSignUp.status === 'complete') {
-        await setActive({ session: completeSignUp.createdSessionId });
-        // SHOPIFY ADD ON
-        const valReturned = await createCustomerFunction(values);
-        console.log(JSON.stringify(valReturned));
+        //save user details
         const res = await prisma.user.create({
           data: {
             firstName: values.firstName,
@@ -124,6 +132,9 @@ export default function Page() {
         });
         console.log(`USER SAVED IN PRISMA: ${res}`);
         await updateCustomerAccessToken({ email: values.email, password: values.password });
+        // Check the status to see if it is complete
+        // If complete, the user has been created -- set the session active
+        await setActive({ session: completeSignUp.createdSessionId });
         // Redirect the user to a post sign-up route
         router.push(`/`);
       }
