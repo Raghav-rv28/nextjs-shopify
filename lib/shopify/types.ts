@@ -255,6 +255,9 @@ export type ShopifyCollectionsOperation = {
   data: {
     collections: Connection<ShopifyCollection>;
   };
+  variables: {
+    query: string;
+  };
 };
 
 export type ShopifyMenuOperation = {

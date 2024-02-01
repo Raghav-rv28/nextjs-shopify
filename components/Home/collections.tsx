@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default async function Collections() {
-  const collections = await getCollections();
+  const collections = await getCollections('');
 
   return (
     <div className="my-8 flex w-full flex-col items-center justify-center text-center">
