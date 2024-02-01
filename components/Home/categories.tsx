@@ -18,12 +18,12 @@ const categories = [
     url: 'https://cdn.shopify.com/s/files/1/0736/0882/3069/files/diamond.jpg?v=1685296231'
   },
   {
-    title: 'Gold',
-    url: 'https://cdn.shopify.com/s/files/1/0736/0882/3069/files/IMG_8060.jpg?v=1705788160'
-  },
-  {
     title: "Men's",
     url: 'https://cdn.shopify.com/s/files/1/0736/0882/3069/files/men_rings.jpg?v=1685305185'
+  },
+  {
+    title: 'Gold',
+    url: 'https://cdn.shopify.com/s/files/1/0736/0882/3069/files/Screen_Shot_2024-01-20_at_5.04.47_PM.png?v=1705788312'
   },
   {
     title: "Men's",
@@ -48,28 +48,26 @@ export default function Categories() {
     });
   }, [api]);
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
+    <div className="flex w-full flex-col items-center justify-center">
       <Carousel setApi={setApi} opts={{ loop: true }} className="w-full md:w-10/12">
         <CarouselContent>
           {categories.map((category) => (
             <CarouselItem
               key={category.url}
-              className="flex items-center justify-center pl-2 md:basis-1/2 lg:basis-1/3"
+              className="group relative flex items-center justify-center pl-2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
             >
               <Link href="/">
-                <div className="group relative flex items-center justify-center">
-                  <div className="absolute inset-x-0 bottom-10 z-50 flex items-end justify-center text-3xl font-semibold text-orange-300 opacity-0 duration-300 group-hover:opacity-100">
-                    {category.title}
-                  </div>
-                  <Image
-                    src={category.url}
-                    className="overflow-hidden group-hover:blur-sm"
-                    width={600}
-                    height={800}
-                    alt="Avatar"
-                    title="DIAMOND"
-                  />
+                <div className="absolute inset-x-0 bottom-10 z-50 flex items-end justify-center text-3xl font-semibold text-orange-300 opacity-0 duration-300 group-hover:opacity-100">
+                  {category.title}
                 </div>
+                <Image
+                  src={category.url}
+                  className="overflow-hidden group-hover:scale-105 group-hover:blur-sm"
+                  width={450}
+                  height={900}
+                  alt={`Banner image for category ${category.title}`}
+                  title={category.title}
+                />
               </Link>
             </CarouselItem>
           ))}
