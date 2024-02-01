@@ -12,10 +12,12 @@ const { SITE_NAME } = process.env;
 
 export default async function Navbar() {
   const menu = await getMenu('main-menu');
+  const collections = await getMenu('collections-menu');
+  console.log(collections);
   return (
     <nav className="relative flex items-center justify-between p-4 lg:justify-between lg:px-6">
       <div className="block flex-none lg:hidden">
-        <MobileMenu menu={menu} />
+        <MobileMenu menu={collections} />
       </div>
       <div className="flex w-full items-center">
         <div className="flex w-full lg:w-1/2">

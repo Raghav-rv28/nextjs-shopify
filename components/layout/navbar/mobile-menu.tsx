@@ -13,6 +13,7 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
+  const [showProducts, setShowProducts] = useState(false);
   const openMobileMenu = () => setIsOpen(true);
   const closeMobileMenu = () => setIsOpen(false);
 
@@ -74,20 +75,48 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
                 <div className="mb-4 w-full">
                   <Search />
                 </div>
-                {menu.length ? (
-                  <ul className="flex w-full flex-col">
-                    {menu.map((item: Menu) => (
-                      <li
-                        className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"
-                        key={item.title}
-                      >
-                        <Link href={item.url} onClick={closeMobileMenu}>
-                          {item.title}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
+                <ul className="flex w-full flex-col">
+                  <li className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white">
+                    <Link href={'/'} onClick={closeMobileMenu}>
+                      Home
+                    </Link>
+                  </li>
+                  <li className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white">
+                    <button onClick={() => setShowProducts((prev) => !prev)}>Our Products</button>
+                  </li>
+                  {showProducts ? (
+                    <ul className="flex w-full flex-col">
+                      {menu.map((item: Menu) => (
+                        <li
+                          className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"
+                          key={item.title}
+                        >
+                          <Link href={item.url} onClick={closeMobileMenu}>
+                            <div className="flex w-full justify-between px-4 hover:font-bold">
+                              {item.title}
+                              {item.items.length > 0 && (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="h-6 w-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                                  />
+                                </svg>
+                              )}
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </ul>
               </div>
             </Dialog.Panel>
           </Transition.Child>

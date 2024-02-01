@@ -417,7 +417,7 @@ export async function getMenu(handle: string): Promise<Menu[]> {
     }
   });
   return (
-    (await res.body?.data?.menu?.items.map((item) => {
+    res.body?.data?.menu?.items.map((item) => {
       const itemSitem =
         item.items.length === 0
           ? []
@@ -430,7 +430,7 @@ export async function getMenu(handle: string): Promise<Menu[]> {
         url: item.url.replace(domain, '').replace('/collections', '/search'),
         items: itemSitem
       };
-    })) || []
+    }) || []
   );
 }
 
