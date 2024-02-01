@@ -2,13 +2,13 @@
 
 import { useAuth, useSignUp } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PrismaClient } from '@prisma/client';
 import { signUpSchema, signUpSchemaType } from 'Schema/authentication';
 import { Button } from 'components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
 import { Input } from 'components/ui/input';
 import { toast } from 'components/ui/use-toast';
-import { createCustomerFunction, updateCustomerAccessToken } from 'lib/shopify';
+import { createCustomerFunction } from 'lib/shopify';
+import { createUserInDB } from 'lib/shopify/actions.ts/user';
 import { createCustomerInput } from 'lib/shopify/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -30,7 +30,6 @@ export default function Page() {
   const [code, setCode] = React.useState('');
   const [phoneCode, setPhoneCode] = React.useState('');
   const router = useRouter();
-  const prisma = new PrismaClient();
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema)
   });
@@ -90,14 +89,14 @@ export default function Page() {
         setVerifying(true);
       }
     } catch (err: any) {
+      // This can return an array of errors.
+      // See https://clerk.com/docs/custom-flows/error-handling to learn about error handling
+      console.error('Error:', JSON.stringify(err, null, 2));
       toast({
         title: `${err.status} | ${JSON.stringify(err?.errors[0].meta)} ${err?.errors[0].message}`,
         description: err?.errors[0].longMessage,
         variant: 'destructive'
       });
-      // This can return an array of errors.
-      // See https://clerk.com/docs/custom-flows/error-handling to learn about error handling
-      console.error('Error:', JSON.stringify(err, null, 2));
     }
   };
 
@@ -119,19 +118,18 @@ export default function Page() {
       if (completeSignUp.status !== 'complete') {
         console.log(JSON.stringify(completeSignUp, null, 2));
       }
-      console.log(JSON.stringify(completePhoneSignUp, null, 2));
+      if (completePhoneSignUp.status !== 'complete') {
+        console.log(JSON.stringify(completePhoneSignUp, null, 2));
+      }
       if (completeSignUp.status === 'complete' && completePhoneSignUp.status === 'complete') {
         //save user details
-        const res = await prisma.user.create({
-          data: {
-            firstName: values.firstName,
-            email: values.email,
-            lastName: values.lastName,
-            phone: values.phone
-          }
+        createUserInDB({
+          firstName: values.firstName,
+          email: values.email,
+          lastName: values.lastName,
+          phone: values.phone,
+          password: values.password
         });
-        console.log(`USER SAVED IN PRISMA: ${res}`);
-        await updateCustomerAccessToken({ email: values.email, password: values.password });
         // Check the status to see if it is complete
         // If complete, the user has been created -- set the session active
         await setActive({ session: completeSignUp.createdSessionId });
@@ -139,7 +137,7 @@ export default function Page() {
         router.push(`/`);
       }
     } catch (err: any) {
-      console.error('Error:', JSON.stringify(err, null, 2));
+      console.log('Error:', JSON.stringify(err));
       err.errors.map((error: any) => {
         toast({
           title: `${err.status} | ${error.message}`,

@@ -50,10 +50,11 @@ export default function SignInForm() {
       }
 
       if (completeSignIn.status === 'complete') {
+        // SHOPIFY ADD ON
+        console.log(email, password);
+        if (email && password) await updateCustomerAccessToken({ email, password });
         // If complete, user exists and provided password match -- set session active
         await setActive({ session: completeSignIn.createdSessionId });
-        // SHOPIFY ADD ON
-        if (!email && !password) await updateCustomerAccessToken({ email, password });
         // send data to database
         // Redirect the user to a post sign-in route
         router.push('/');

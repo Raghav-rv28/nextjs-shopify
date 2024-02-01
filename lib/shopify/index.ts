@@ -227,7 +227,7 @@ export async function createCart(): Promise<Cart | undefined> {
   }
   console.log(`IN CART: ${userDetails?.accessToken}`);
   let res;
-  if (userDetails !== undefined && user !== null) {
+  if (userDetails?.accessToken !== undefined && user !== null) {
     res = await shopifyFetch<ShopifyCreateCartOperationTwo>({
       query: createCartMutationOne,
       variables: {
@@ -501,7 +501,8 @@ export async function getProducts({
  * updates customer access token using Shopify query "customerAccessTokenCreate" and saving it in database using prisma.
  * @param email User's Email
  * @param password Users password
- * @returns null
+ * @returns void
+
  */
 export async function updateCustomerAccessToken({
   email,
