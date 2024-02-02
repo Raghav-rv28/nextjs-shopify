@@ -28,7 +28,7 @@ export default function HeroSection() {
               src={
                 'https://cdn.shopify.com/s/files/1/0736/0882/3069/files/banner-2.png?v=1684775105'
               }
-              width={1500}
+              width={2500}
               height={563}
               priority
               alt="holiday sale banner 10% off CODE: HARAMJADE"
@@ -46,8 +46,8 @@ export default function HeroSection() {
             />
           </CarouselItem>
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious className="hidden md:block" />
+        <CarouselNext className="hidden md:block" />
       </Carousel>
     </div>
   );

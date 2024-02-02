@@ -60,7 +60,7 @@ export default async function Reviews() {
           <div className="space-y-8 lg:col-span-2">
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
-                <Avatar>
+                <Avatar className="hidden md:block">
                   <AvatarImage alt="Harsimranpreet Sidhu" />
                   <AvatarFallback>HS</AvatarFallback>
                 </Avatar>
@@ -86,7 +86,7 @@ export default async function Reviews() {
             </div>
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
-                <Avatar>
+                <Avatar className="hidden md:block">
                   <AvatarImage alt="Sunny Kalra" src="/placeholder.svg?height=40&width=40" />
                   <AvatarFallback>SK</AvatarFallback>
                 </Avatar>
@@ -110,7 +110,7 @@ export default async function Reviews() {
             </div>
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
-                <Avatar>
+                <Avatar className="hidden md:block">
                   <AvatarImage alt="H K" src="/placeholder.svg?height=40&width=40" />
                   <AvatarFallback>HK</AvatarFallback>
                 </Avatar>

@@ -27,7 +27,7 @@ export default async function Navbar() {
         <div className="flex w-full lg:w-1/3">
           <Link
             href="/"
-            className="mr-2 flex w-full items-center justify-center lg:mr-6 lg:max-w-[200px]"
+            className="mr-auto flex w-full items-center justify-center lg:mr-6 lg:max-w-[200px]"
           >
             <div className="ml-2 flex-none lg:block">
               <Image
@@ -65,7 +65,7 @@ export default async function Navbar() {
         </div>
       </div>
       <Separator />
-      <div className="my-2 hidden w-full items-center justify-center overflow-clip md:flex md:basis-full">
+      <div className="my-2 hidden w-full items-center justify-center md:flex md:basis-full">
         <CategoryMenu
           goldCategories={goldCollections}
           menCategories={menCollections}

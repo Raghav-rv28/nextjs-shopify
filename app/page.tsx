@@ -4,7 +4,7 @@ import Collections from 'components/Home/collections';
 import Divider from 'components/Home/divider';
 import Gender from 'components/Home/gender';
 import HeroSection from 'components/Home/hero-section';
-import Incentive from 'components/Home/incentive';
+import Incentives from 'components/Home/incentives';
 import Reviews from 'components/Home/reviews';
 import { ThreeItemGrid } from 'components/grid/three-items';
 import Footer from 'components/layout/footer';
@@ -33,7 +33,7 @@ export default async function HomePage() {
       {/* Show Categories (GOLD, SILVER, DIAMOND, MENS) */}
       <Categories />
       <Divider />
-      <Incentive />
+      <Incentives />
       <Gender />
       <Divider />
       <About />
