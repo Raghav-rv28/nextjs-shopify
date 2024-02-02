@@ -18,7 +18,6 @@ export async function generateMetadata({
   const product = await getProduct(params.handle);
 
   if (!product) return notFound();
-  console.log(JSON.stringify(product.metafields[0]));
   const { url, width, height, altText: alt } = product.featuredImage || {};
   const indexable = !product.tags.includes(HIDDEN_PRODUCT_TAG);
 
