@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function About() {
   return (
-    <div className="flex h-[80svh] w-full">
+    <div className="flex w-full">
       <div
         className="flex justify-center text-black dark:text-white md:hidden"
         style={{
@@ -15,7 +15,7 @@ export default function About() {
             <h1 className="text-5xl font-bold leading-tight">
               We built our business on great customer service
             </h1>
-            <p className="mt-4 text-lg">
+            <p className="text-md mb-8 mt-4 font-semibold">
               Jewellery is the pride of all women and at Dubai Jewelers we give you the opportunity
               to explore the world of jewelry. Since the times of kings and queens, jewelry was
               considered sacred and was always the center of attraction for them. With passage of
@@ -29,7 +29,7 @@ export default function About() {
             </p>
             <Link
               href="/pages/about-us"
-              className="mt-8 rounded border border-orange-500 bg-transparent px-4 py-2 font-semibold text-orange-300 hover:border-transparent hover:bg-orange-400 hover:text-white"
+              className="rounded border border-orange-500 bg-transparent px-4 py-2 font-semibold text-orange-300 hover:border-transparent hover:bg-orange-400 hover:text-white"
             >
               Read More →
             </Link>

@@ -19,6 +19,7 @@ export default function HeroSection() {
               }
               width={1366}
               height={768}
+              priority
               alt="holiday sale banner 10% off CODE: HARAMJADE"
             />
           </CarouselItem>
@@ -29,6 +30,7 @@ export default function HeroSection() {
               }
               width={1500}
               height={563}
+              priority
               alt="holiday sale banner 10% off CODE: HARAMJADE"
             />
           </CarouselItem>
@@ -39,6 +41,7 @@ export default function HeroSection() {
               }
               width={1500}
               height={563}
+              priority
               alt="holiday sale banner 10% off CODE: HARAMJADE"
             />
           </CarouselItem>

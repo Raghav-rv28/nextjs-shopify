@@ -5,6 +5,7 @@ import Divider from 'components/Home/divider';
 import Gender from 'components/Home/gender';
 import HeroSection from 'components/Home/hero-section';
 import Incentive from 'components/Home/incentive';
+import Reviews from 'components/Home/reviews';
 import { ThreeItemGrid } from 'components/grid/three-items';
 import Footer from 'components/layout/footer';
 import { Suspense } from 'react';
@@ -36,6 +37,7 @@ export default async function HomePage() {
       <Gender />
       <Divider />
       <About />
+      <Reviews />
       <Suspense>
         <Footer />
       </Suspense>
