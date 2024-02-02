@@ -27,7 +27,6 @@ export function CategoryMenu({
   silverCategories: Collection[];
   diamondCategories: Collection[];
 }) {
-  console.log(goldCategories);
   return (
     <NavigationMenu>
       <NavigationMenuList>

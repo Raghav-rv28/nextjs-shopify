@@ -17,7 +17,6 @@ export default async function Navbar() {
   const menCollections = await getCollections('title:Men');
   const silverCollections = await getCollections('title:silver');
   const diamondCollections = await getCollections('title:diamond');
-  console.log(collections);
   return (
     <nav className="sticky top-0 z-[60] flex flex-col items-center justify-between bg-inherit p-4 lg:justify-between lg:px-6">
       <div className="my-3 flex w-full items-center">

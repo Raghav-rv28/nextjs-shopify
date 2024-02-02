@@ -20,7 +20,7 @@ export default async function Account() {
           <AvatarFallback>DJ</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="z-[70] w-56">
         {/* NAVIGATION */}
         <SignedIn>
           <DropdownMenuLabel>{`${user?.firstName} ${user?.lastName}`}</DropdownMenuLabel>
