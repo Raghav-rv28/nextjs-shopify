@@ -1,3 +1,4 @@
+import About from 'components/Home/about';
 import Categories from 'components/Home/categories';
 import Collections from 'components/Home/collections';
 import Divider from 'components/Home/divider';
@@ -34,6 +35,7 @@ export default async function HomePage() {
       <Incentive />
       <Gender />
       <Divider />
+      <About />
       <Suspense>
         <Footer />
       </Suspense>

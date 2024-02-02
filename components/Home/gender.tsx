@@ -4,9 +4,9 @@ import { JSX, SVGProps } from 'react';
 
 export default function Gender() {
   return (
-    <div className=" text-white">
+    <div className=" text-black dark:text-white">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <h2 className="text-center text-3xl font-extrabold text-white sm:text-4xl">
+        <h2 className="text-center text-3xl font-extrabold text-black dark:text-white sm:text-4xl">
           Shop By Gender
         </h2>
         <p className="mt-2 text-center text-sm text-gray-300">
@@ -31,7 +31,7 @@ export default function Gender() {
               width="255"
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-              <h3 className="mt-4 text-lg font-medium text-white">Men</h3>
+              <h3 className="mt-4 text-2xl font-medium text-black dark:text-white">Men</h3>
               <p className="mt-2">
                 <Link className="text-orange-300 hover:text-orange-100" href="#">
                   Explore More
@@ -52,7 +52,7 @@ export default function Gender() {
               width="255"
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-              <h3 className="mt-4 text-lg font-medium text-white">Kids</h3>
+              <h3 className="mt-4 text-2xl font-medium text-black dark:text-white">Kids</h3>
               <p className="mt-2">
                 <Link className="text-orange-300 hover:text-orange-100" href="#">
                   Explore More
@@ -73,7 +73,7 @@ export default function Gender() {
               width="255"
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-              <h3 className="mt-4 text-lg font-medium text-white">Women</h3>
+              <h3 className="mt-4 text-2xl font-medium text-black dark:text-white">Women</h3>
               <p className="mt-2">
                 <Link className="text-orange-300 hover:text-orange-100" href="#">
                   Explore More
