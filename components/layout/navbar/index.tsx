@@ -3,7 +3,6 @@ import OpenCart from 'components/cart/open-cart';
 import ThemeSwitcher from 'components/layout/navbar/theme-switcher';
 import { Separator } from 'components/ui/separator';
 import { getCollections, getMenu } from 'lib/shopify';
-import { Menu } from 'lib/shopify/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -13,20 +12,19 @@ import MobileMenu from './mobile-menu';
 import Search from './search';
 
 export default async function Navbar() {
-  const menu = await getMenu('main-menu');
   const collections = await getMenu('collections-menu');
   const goldCollections = await getCollections('title:Gold');
   const menCollections = await getCollections('title:Men');
   const silverCollections = await getCollections('title:silver');
-  const diamondCollections = await getCollections('diamond');
+  const diamondCollections = await getCollections('title:diamond');
   console.log(collections);
   return (
-    <nav className="relative flex flex-col items-center justify-between p-4 lg:justify-between lg:px-6">
-      <div className="flex w-full items-center">
+    <nav className="sticky top-0 z-[60] flex flex-col items-center justify-between bg-inherit p-4 lg:justify-between lg:px-6">
+      <div className="my-3 flex w-full items-center">
         <div className="block flex-none lg:hidden">
           <MobileMenu menu={collections} />
         </div>
-        <div className="flex w-full lg:w-1/2">
+        <div className="flex w-full lg:w-1/3">
           <Link
             href="/"
             className="mr-2 flex w-full items-center justify-center lg:mr-6 lg:max-w-[200px]"
@@ -52,27 +50,11 @@ export default async function Navbar() {
               />
             </div>
           </Link>
-          {menu.length ? (
-            <ul className="hidden gap-6 text-sm lg:flex lg:items-center">
-              {menu
-                .filter((item: Menu) => item.title !== 'Our Products')
-                .map((item: Menu) => (
-                  <li key={item.title}>
-                    <Link
-                      href={item.url}
-                      className="whitespace-nowrap text-lg text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
-                    >
-                      {item.title}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-          ) : null}
         </div>
-        <div className="hidden justify-center lg:flex lg:w-3/12">
+        <div className="hidden justify-center lg:flex lg:w-1/3">
           <Search />
         </div>
-        <div className="flex justify-end space-x-7 lg:mr-[5rem] lg:w-3/12">
+        <div className="flex justify-end space-x-7 lg:mr-[5rem] lg:w-1/3">
           <Suspense fallback={<OpenCart />}>
             <span className="hidden lg:flex">
               <ThemeSwitcher />
@@ -83,7 +65,7 @@ export default async function Navbar() {
         </div>
       </div>
       <Separator />
-      <div className="my-2 hidden w-full items-center justify-center md:flex md:basis-full">
+      <div className="my-2 hidden w-full items-center justify-center overflow-clip md:flex md:basis-full">
         <CategoryMenu
           goldCategories={goldCollections}
           menCategories={menCollections}
