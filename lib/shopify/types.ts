@@ -133,6 +133,10 @@ export type ShopifyProduct = {
     maxVariantPrice: Money;
     minVariantPrice: Money;
   };
+  compareAtPriceRange: {
+    maxVariantPrice: Money;
+    minVariantPrice: Money;
+  };
   metafields: {
     id: string;
     key: string;
