@@ -2,7 +2,7 @@ import Cart from 'components/cart';
 import OpenCart from 'components/cart/open-cart';
 import ThemeSwitcher from 'components/layout/navbar/theme-switcher';
 import { Separator } from 'components/ui/separator';
-import { getMenu } from 'lib/shopify';
+import { getCollections, getMenu } from 'lib/shopify';
 import { Menu } from 'lib/shopify/types';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,6 +15,7 @@ import Search from './search';
 export default async function Navbar() {
   const menu = await getMenu('main-menu');
   const collections = await getMenu('collections-menu');
+  const goldCollections = await getCollections('title:Gold');
   console.log(collections);
   return (
     <nav className="relative flex flex-col items-center justify-between p-4 lg:justify-between lg:px-6">
@@ -80,7 +81,7 @@ export default async function Navbar() {
       </div>
       <Separator />
       <div className="my-2 hidden w-full items-center justify-center md:flex md:basis-full">
-        <CategoryMenu />
+        <CategoryMenu categories={goldCollections} />
       </div>
     </nav>
   );

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import * as React from 'react';
 
 import { clsx } from 'clsx';
+import { Collection } from 'lib/shopify/types';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -52,7 +53,8 @@ const components: { title: string; href: string; description: string }[] = [
   }
 ];
 
-export function CategoryMenu() {
+export function CategoryMenu({ categories }: { categories: Collection[] }) {
+  console.log(categories);
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -64,30 +66,34 @@ export function CategoryMenu() {
                 <NavigationMenuLink asChild>
                   <a
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/"
+                    href={categories[0]?.path || '/search'}
                   >
-                    <div className="mb-2 mt-4 text-lg font-medium">shadcn/ui</div>
+                    <div className="mb-2 mt-4 text-lg font-medium">{categories[0]?.title}</div>
                     <p className="text-sm leading-tight text-muted-foreground">
-                      Beautifully designed components built with Radix UI and Tailwind CSS.
+                      {categories[0]?.description}
                     </p>
                   </a>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/docs" title="Introduction">
-                Re-usable components built using Radix UI and Tailwind CSS.
-              </ListItem>
-              <ListItem href="/docs/installation" title="Installation">
-                How to install dependencies and structure your app.
-              </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography1">
-                Styles for headings, paragraphs, lists...etc
-              </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography2">
-                Styles for headings, paragraphs, lists...etc
-              </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography3">
-                Styles for headings, paragraphs, lists...etc
-              </ListItem>
+              {categories.map(
+                (component: {
+                  title: string;
+                  path: string | undefined;
+                  description: string | null | undefined;
+                }) => {
+                  if (component.title === 'All') return;
+                  return (
+                    <ListItem key={component.title} title={component.title} href={component.path}>
+                      {component.description?.substring(0, 50)}
+                      {component.description !== null &&
+                      component.description !== undefined &&
+                      component.description !== ''
+                        ? '...'
+                        : ''}
+                    </ListItem>
+                  );
+                }
+              )}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -104,9 +110,9 @@ export function CategoryMenu() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/search/new-arrivals" legacyBehavior passHref>
             <NavigationMenuLink className={clsx(navigationMenuTriggerStyle(), 'bg-transparent')}>
-              Documentation
+              New Arrivals
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
