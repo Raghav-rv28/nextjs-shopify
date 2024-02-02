@@ -49,6 +49,7 @@ export default function Categories() {
   }, [api]);
   return (
     <div className="flex w-full flex-col items-center justify-center">
+      <div className="my-16 text-5xl">Shop By Categories</div>
       <Carousel setApi={setApi} opts={{ loop: true }} className="w-full md:w-10/12">
         <CarouselContent>
           {categories.map((category) => (

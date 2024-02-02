@@ -16,6 +16,9 @@ export default async function Navbar() {
   const menu = await getMenu('main-menu');
   const collections = await getMenu('collections-menu');
   const goldCollections = await getCollections('title:Gold');
+  const menCollections = await getCollections('title:Men');
+  const silverCollections = await getCollections('title:silver');
+  const diamondCollections = await getCollections('diamond');
   console.log(collections);
   return (
     <nav className="relative flex flex-col items-center justify-between p-4 lg:justify-between lg:px-6">
@@ -81,7 +84,12 @@ export default async function Navbar() {
       </div>
       <Separator />
       <div className="my-2 hidden w-full items-center justify-center md:flex md:basis-full">
-        <CategoryMenu categories={goldCollections} />
+        <CategoryMenu
+          goldCategories={goldCollections}
+          menCategories={menCollections}
+          silverCategories={silverCollections}
+          diamondCategories={diamondCollections}
+        />
       </div>
     </nav>
   );
