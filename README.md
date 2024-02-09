@@ -6,7 +6,6 @@ A Next.js 14 Ecommerce Store featuring:
 - React Server Components (RSCs) and Suspense
 - Server Actions for mutations
 - Edge Runtime
-- New fetching and caching paradigms
 - Dynamic OG images
 - Styling with Tailwind CSS
 - Checkout and payments with Shopify
